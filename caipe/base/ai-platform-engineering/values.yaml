@@ -1,6 +1,10 @@
 # Override values for idpbuilder local deployment - Base configuration
 # Global configuration shared across all subcharts
 global:
+  # Disable graph RAG for now
+  rag:
+    enableGraphRag: false
+
   slim:
     enabled: false
 
@@ -108,24 +112,51 @@ global:
           key: secret/ai-platform-engineering/global
           property: AWS_BEDROCK_PROVIDER
 
+promptConfigType: "deep_agent"
+
 supervisor-agent:
   nameOverride: "supervisor-agent"
   image:
     repository: "ghcr.io/cnoe-io/ai-platform-engineering"
-    tag: "0.1.19"
+    tag: "0.2.2"
   env:
     EXTERNAL_URL: "https://cnoe.localtest.me:8443/ai-platform-engineering"
     RAG_AGENT_PORT: 8099
+
+    # Agent Connectivity Configuration
+    AGENT_CONNECTIVITY_ENABLE_BACKGROUND: "true"  # Routinely checks each subagent connectivity to add or remove any from existing tools list
+    SKIP_AGENT_CONNECTIVITY_CHECK: "false"  # Do not skip the connectivity check; supervisor agent will check each subagent is reachable
+
+    # Orchestration and Streaming Configuration
+    ENABLE_ENHANCED_STREAMING: "false"  # Enable enhanced streaming with intelligent routing (DIRECT/PARALLEL/COMPLEX modes)
+    FORCE_DEEP_AGENT_ORCHESTRATION: "true"  # Force all queries through Deep Agent with parallel orchestration hints (DEFAULT - best performance)
+    ENABLE_ENHANCED_ORCHESTRATION: "false"  # EXPERIMENTAL: Smart routing + orchestration hints (4th mode for comparison)
+    STREAM_SUB_AGENT_TOOL_OUTPUT: "true"  # Stream intermediate tool outputs (📄) from sub-agents to end user
+
+    # Response Format Configuration
+    ENABLE_STRUCTURED_OUTPUT: "false"  # Set to "true" to enforce execution plans with Pydantic validation
+    ENABLE_ARTIFACT_STREAMING: "true"
+
+    # TODO: requires new backstage image to be built first
+    # # OAuth2 Configuration
+    # A2A_AUTH_OAUTH2: true
+    # # Backstage authentication
+    # JWKS_URI: "https://cnoe.localtest.me:8443/api/auth/.well-known/jwks.json"
+    # AUDIENCE: "backstage"
+    # ISSUER: "https://cnoe.localtest.me:8443/api/auth"
+    # OAUTH2_CLIENT_ID: "backstage"
+    # TOKEN_ENDPOINT: "https://cnoe.localtest.me:8443/api/auth/oauth2/token"
+
 agent-argocd:
   nameOverride: "agent-argocd"
   image:
     repository: "ghcr.io/cnoe-io/agent-argocd"
-    tag: "0.1.19"
+    tag: "0.2.2"
     pullPolicy: "Always"
   mcp:
     image:
       repository: "ghcr.io/cnoe-io/mcp-argocd"
-      tag: "0.1.19"
+      tag: "0.2.2"
       pullPolicy: "Always"
     mode: "http" # Options: stdio, http
     port: 8000
@@ -151,7 +182,7 @@ agent-aws:
   image:
     repository: "ghcr.io/cnoe-io/agent-aws"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     mode: "stdio" # AWS currently does not support HTTP mode
   agentSecrets:
@@ -176,11 +207,11 @@ agent-backstage:
   image:
     repository: "ghcr.io/cnoe-io/agent-backstage"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     image:
       repository: "ghcr.io/cnoe-io/mcp-backstage"
-      tag: "0.1.19"
+      tag: "0.2.2"
       pullPolicy: "Always"
     mode: "http" # Options: stdio, http
     port: 8000
@@ -202,11 +233,11 @@ agent-confluence:
   image:
     repository: "ghcr.io/cnoe-io/agent-confluence"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     image:
       repository: "ghcr.io/cnoe-io/mcp-confluence"
-      tag: "0.1.19"
+      tag: "0.2.2"
       pullPolicy: "Always"
     mode: "http" # Options: stdio, http
     port: 8000
@@ -232,7 +263,7 @@ agent-github:
   image:
     repository: "ghcr.io/cnoe-io/agent-github"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     useRemoteMcpServer: true
   agentSecrets:
@@ -249,11 +280,11 @@ agent-jira:
   image:
     repository: "ghcr.io/cnoe-io/agent-jira"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     image:
       repository: "ghcr.io/cnoe-io/mcp-jira"
-      tag: "0.1.19"
+      tag: "0.2.2"
       pullPolicy: "Always"
     mode: "http" # Options: stdio, http
     port: 8000
@@ -280,11 +311,11 @@ agent-komodor:
   image:
     repository: "ghcr.io/cnoe-io/agent-komodor"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     image:
       repository: "ghcr.io/cnoe-io/mcp-komodor"
-      tag: "0.1.19"
+      tag: "0.2.2"
       pullPolicy: "Always"
     mode: "http" # Options: stdio, http
     port: 8000
@@ -306,11 +337,11 @@ agent-pagerduty:
   image:
     repository: "ghcr.io/cnoe-io/agent-pagerduty"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     image:
       repository: "ghcr.io/cnoe-io/mcp-pagerduty"
-      tag: "0.1.19"
+      tag: "0.2.2"
       pullPolicy: "Always"
     mode: "http" # Options: stdio, http
     port: 8000
@@ -332,11 +363,11 @@ agent-slack:
   image:
     repository: "ghcr.io/cnoe-io/agent-slack"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     image:
       repository: "ghcr.io/cnoe-io/mcp-slack"
-      tag: "0.1.19"
+      tag: "0.2.2"
       pullPolicy: "Always"
     mode: "http" # Options: stdio, http
     port: 8000
@@ -371,11 +402,11 @@ agent-splunk:
   image:
     repository: "ghcr.io/cnoe-io/agent-splunk"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     image:
       repository: "ghcr.io/cnoe-io/mcp-splunk"
-      tag: "0.1.19"
+      tag: "0.2.2"
       pullPolicy: "Always"
     mode: "http" # Options: stdio, http
     port: 8000
@@ -397,11 +428,11 @@ agent-webex:
   image:
     repository: "ghcr.io/cnoe-io/agent-webex"
     pullPolicy: "Always"
-    tag: "0.1.19"
+    tag: "0.2.2"
   mcp:
     image:
       repository: "ghcr.io/cnoe-io/mcp-webex"
-      tag: "0.1.19"
+      tag: "0.2.2"
       pullPolicy: "Always"
     mode: "http" # Options: stdio, http
     port: 8000
@@ -415,7 +446,23 @@ agent-webex:
           property: WEBEX_TOKEN
 
 rag-stack:
+  rag-server:
+    image:
+      repository: "ghcr.io/cnoe-io/caipe-rag-server"
+      tag: "0.2.2"
+      pullPolicy: "Always"
+
+  agent-rag:
+    image:
+      repository: "ghcr.io/cnoe-io/caipe-rag-agent-rag"
+      tag: "0.2.2"
+      pullPolicy: "Always"
+
   rag-webui:
+    image:
+      repository: "ghcr.io/cnoe-io/caipe-rag-webui"
+      tag: "0.2.2"
+      pullPolicy: "Always"
     ingress:
       enabled: true
       className: "nginx"
@@ -451,7 +498,3 @@ rag-stack:
       enabled: false  # Default is true, we need false
     woodpecker:
       enabled: true   # Default is false, we need true
-
-    # Jarvis node scheduling
-
-    # Performance overrides only for compute nodes

@@ -208,18 +208,17 @@ data:
       infoPage: https://cnoe-io.github.io/ai-platform-engineering/
       showOptions: true
       useOpenIDToken: true  # Set to true to use OpenIdConnectApi.getIdToken(), false to use IdentityApi.getCredentials()
-      enableStreaming: false   # Set to true to enable streaming responses, false for non-streaming
+      enableStreaming: true  # Set to true to enable streaming responses, false for non-streaming
       requestTimeout: 300
-      headerTitle: CAIPE
+      autoReloadOnTokenExpiry: false
+      headerTitle: CAIPE Distributed Multi-Agentic System
       headerSubtitle: AI Platform Engineer Assistant
       inputPlaceholder: Ask CAIPE anything...
       initialSuggestions:
-        - Create GitHub Repository
-        - Deploy ArgoCD Application
-        - Create AWS Resources
-        - Get LLM keys
-        - Add MyID Groups
-        - Invite users to Github Organization
+        - What can you do?
+        - What ArgoCD Applications are deployed?
+        - Show me current catalog version from Backstage
+        - Get my Github profile details
       thinkingMessagesInterval: 7000  # Interval in milliseconds (default: 7000)
       thinkingMessages:
         - "⚙️ Processing query — even great thoughts start with a single thread."
@@ -320,7 +319,7 @@ spec:
                 name: argocd-credentials
             - secretRef:
                 name: backstage-api-token
-          image: ghcr.io/sriaradhyula/backstage-app:35e30d165584e583b205c365d44cb938864896c7
+          image: ghcr.io/suwhang-cisco/backstage-app:608f93ad3fc75cd3161d7163ba677e9ccc9caeff
           name: backstage
           ports:
             - containerPort: 7007

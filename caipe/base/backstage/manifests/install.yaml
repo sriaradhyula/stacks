@@ -178,8 +178,13 @@ data:
         entityFilename: catalog-info.yaml
         pullRequestBranchName: backstage-integration
       rules:
-        - allow: [Component, System, API, Resource, Location, Template]
+        - allow: [Component, System, API, Resource, Location, Template, User, Group, Domain]
       locations:
+        # Mock catalog data for testing MCP tools
+        - type: file
+          target: /app/mock-catalog/all.yaml
+          rules:
+            - allow: [Component, System, API, Resource, Location, Template, User, Group, Domain]
         # Examples from a public GitHub repository.
         - type: url
           target: https://cnoe.localtest.me/gitea/giteaAdmin/idpbuilder-localdev-backstage-templates-entities/raw/branch/main/catalog-info.yaml
@@ -217,7 +222,9 @@ data:
       initialSuggestions:
         - What can you do?
         - What ArgoCD Applications are deployed?
-        - Show me current catalog version from Backstage
+        - List all users and groups in Backstage
+        - Who is on the platform-team?
+        - Show me all teams in the catalog
         - Get my Github profile details
       thinkingMessagesInterval: 7000  # Interval in milliseconds (default: 7000)
       thinkingMessages:
@@ -328,6 +335,9 @@ spec:
             - mountPath: /app/config
               name: backstage-config
               readOnly: true
+            - mountPath: /app/mock-catalog
+              name: mock-catalog
+              readOnly: true
       serviceAccountName: backstage
       volumes:
         - name: backstage-config
@@ -343,6 +353,9 @@ spec:
                     - key: k8s-config.yaml
                       path: k8s-config.yaml
                   name: k8s-config
+        - name: mock-catalog
+          configMap:
+            name: backstage-mock-catalog
 ---
 apiVersion: apps/v1
 kind: StatefulSet

@@ -1,0 +1,455 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backstage-mock-catalog
+  namespace: backstage
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+data:
+  all.yaml: |
+    # =============================================================================
+    # MOCK CATALOG DATA FOR BACKSTAGE
+    # Optimized for get_entities_by_query which filters for users and groups
+    # =============================================================================
+
+    # -----------------------------------------------------------------------------
+    # GROUP: Platform Team
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: Group
+    metadata:
+      name: platform-team
+      namespace: default
+      description: Platform Engineering Team - maintains CAIPE, infrastructure, and developer tools
+      annotations:
+        backstage.io/techdocs-ref: dir:.
+      tags:
+        - platform
+        - infrastructure
+        - devops
+      links:
+        - url: https://github.com/cnoe-io
+          title: GitHub Organization
+          icon: github
+    spec:
+      type: team
+      profile:
+        displayName: Platform Team
+        email: platform-team@example.com
+        picture: https://api.dicebear.com/7.x/identicon/svg?seed=platform
+      children: []
+      members:
+        - alice
+        - bob
+        - david
+
+    ---
+    # -----------------------------------------------------------------------------
+    # GROUP: Backend Team
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: Group
+    metadata:
+      name: backend-team
+      namespace: default
+      description: Backend Development Team - builds and maintains backend services and APIs
+      tags:
+        - backend
+        - api
+        - microservices
+    spec:
+      type: team
+      profile:
+        displayName: Backend Team
+        email: backend-team@example.com
+        picture: https://api.dicebear.com/7.x/identicon/svg?seed=backend
+      children: []
+      members:
+        - charlie
+        - eve
+
+    ---
+    # -----------------------------------------------------------------------------
+    # GROUP: Frontend Team
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: Group
+    metadata:
+      name: frontend-team
+      namespace: default
+      description: Frontend Development Team - builds user interfaces and web applications
+      tags:
+        - frontend
+        - react
+        - ui
+    spec:
+      type: team
+      profile:
+        displayName: Frontend Team
+        email: frontend-team@example.com
+        picture: https://api.dicebear.com/7.x/identicon/svg?seed=frontend
+      children: []
+      members:
+        - frank
+        - grace
+
+    ---
+    # -----------------------------------------------------------------------------
+    # GROUP: SRE Team
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: Group
+    metadata:
+      name: sre-team
+      namespace: default
+      description: Site Reliability Engineering Team - ensures system reliability and performance
+      tags:
+        - sre
+        - reliability
+        - oncall
+    spec:
+      type: team
+      profile:
+        displayName: SRE Team
+        email: sre-team@example.com
+        picture: https://api.dicebear.com/7.x/identicon/svg?seed=sre
+      children: []
+      members:
+        - henry
+        - ivy
+
+    ---
+    # -----------------------------------------------------------------------------
+    # GROUP: Data Team
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: Group
+    metadata:
+      name: data-team
+      namespace: default
+      description: Data Engineering Team - manages data pipelines, analytics, and ML infrastructure
+      tags:
+        - data
+        - analytics
+        - ml
+    spec:
+      type: team
+      profile:
+        displayName: Data Team
+        email: data-team@example.com
+        picture: https://api.dicebear.com/7.x/identicon/svg?seed=data
+      children: []
+      members:
+        - jack
+        - kate
+
+    ---
+    # -----------------------------------------------------------------------------
+    # GROUP: Security Team
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: Group
+    metadata:
+      name: security-team
+      namespace: default
+      description: Security Team - handles security reviews, compliance, and incident response
+      tags:
+        - security
+        - compliance
+        - infosec
+    spec:
+      type: team
+      profile:
+        displayName: Security Team
+        email: security-team@example.com
+        picture: https://api.dicebear.com/7.x/identicon/svg?seed=security
+      children: []
+      members:
+        - leo
+        - mary
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Alice (Platform Engineer - Team Lead)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: alice
+      namespace: default
+      description: Senior Platform Engineer and Team Lead
+      tags:
+        - lead
+        - kubernetes
+        - terraform
+    spec:
+      profile:
+        displayName: Alice Anderson
+        email: alice.anderson@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=alice
+      memberOf:
+        - platform-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Bob (Platform Engineer)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: bob
+      namespace: default
+      description: Platform Engineer specializing in CI/CD and GitOps
+      tags:
+        - argocd
+        - github-actions
+        - gitops
+    spec:
+      profile:
+        displayName: Bob Builder
+        email: bob.builder@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=bob
+      memberOf:
+        - platform-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Charlie (Backend Developer)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: charlie
+      namespace: default
+      description: Senior Backend Developer - Java and Go specialist
+      tags:
+        - java
+        - golang
+        - microservices
+    spec:
+      profile:
+        displayName: Charlie Chen
+        email: charlie.chen@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=charlie
+      memberOf:
+        - backend-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: David (Platform Engineer)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: david
+      namespace: default
+      description: Platform Engineer focused on observability and monitoring
+      tags:
+        - prometheus
+        - grafana
+        - observability
+    spec:
+      profile:
+        displayName: David Davis
+        email: david.davis@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=david
+      memberOf:
+        - platform-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Eve (Backend Developer)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: eve
+      namespace: default
+      description: Backend Developer specializing in Python and FastAPI
+      tags:
+        - python
+        - fastapi
+        - databases
+    spec:
+      profile:
+        displayName: Eve Evans
+        email: eve.evans@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=eve
+      memberOf:
+        - backend-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Frank (Frontend Developer)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: frank
+      namespace: default
+      description: Senior Frontend Developer - React and TypeScript expert
+      tags:
+        - react
+        - typescript
+        - nextjs
+    spec:
+      profile:
+        displayName: Frank Foster
+        email: frank.foster@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=frank
+      memberOf:
+        - frontend-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Grace (Frontend Developer)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: grace
+      namespace: default
+      description: Frontend Developer focused on accessibility and UX
+      tags:
+        - accessibility
+        - ux
+        - css
+    spec:
+      profile:
+        displayName: Grace Garcia
+        email: grace.garcia@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=grace
+      memberOf:
+        - frontend-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Henry (SRE)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: henry
+      namespace: default
+      description: Site Reliability Engineer - incident response lead
+      tags:
+        - oncall
+        - incident-response
+        - linux
+    spec:
+      profile:
+        displayName: Henry Hall
+        email: henry.hall@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=henry
+      memberOf:
+        - sre-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Ivy (SRE)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: ivy
+      namespace: default
+      description: Site Reliability Engineer - automation specialist
+      tags:
+        - automation
+        - ansible
+        - chaos-engineering
+    spec:
+      profile:
+        displayName: Ivy Irving
+        email: ivy.irving@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=ivy
+      memberOf:
+        - sre-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Jack (Data Engineer)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: jack
+      namespace: default
+      description: Senior Data Engineer - Spark and Kafka expert
+      tags:
+        - spark
+        - kafka
+        - airflow
+    spec:
+      profile:
+        displayName: Jack Johnson
+        email: jack.johnson@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=jack
+      memberOf:
+        - data-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Kate (ML Engineer)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: kate
+      namespace: default
+      description: ML Engineer - MLOps and model deployment
+      tags:
+        - mlops
+        - pytorch
+        - kubeflow
+    spec:
+      profile:
+        displayName: Kate Kim
+        email: kate.kim@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=kate
+      memberOf:
+        - data-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Leo (Security Engineer)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: leo
+      namespace: default
+      description: Security Engineer - AppSec and penetration testing
+      tags:
+        - appsec
+        - pentesting
+        - devsecops
+    spec:
+      profile:
+        displayName: Leo Lee
+        email: leo.lee@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=leo
+      memberOf:
+        - security-team
+
+    ---
+    # -----------------------------------------------------------------------------
+    # USER: Mary (Security Analyst)
+    # -----------------------------------------------------------------------------
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: mary
+      namespace: default
+      description: Security Analyst - compliance and risk management
+      tags:
+        - compliance
+        - soc2
+        - risk-management
+    spec:
+      profile:
+        displayName: Mary Miller
+        email: mary.miller@example.com
+        picture: https://api.dicebear.com/7.x/avataaars/svg?seed=mary
+      memberOf:
+        - security-team

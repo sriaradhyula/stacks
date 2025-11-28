@@ -140,11 +140,13 @@ supervisor-agent:
     # # OAuth2 Configuration
     A2A_AUTH_OAUTH2: true
     # Backstage authentication
-    JWKS_URI: "https://cnoe.localtest.me:8443/api/auth/.well-known/jwks.json"
+    # JWKS_URI and TOKEN_ENDPOINT use internal cluster service to avoid SSL issues
+    # ISSUER must match the external URL because that's what's in the JWT tokens
+    JWKS_URI: "http://backstage.backstage.svc.cluster.local:7007/api/auth/.well-known/jwks.json"
     AUDIENCE: "backstage"
     ISSUER: "https://cnoe.localtest.me:8443/api/auth"
     OAUTH2_CLIENT_ID: "backstage"
-    TOKEN_ENDPOINT: "https://cnoe.localtest.me:8443/api/auth/oauth2/token"
+    TOKEN_ENDPOINT: "http://backstage.backstage.svc.cluster.local:7007/api/auth/oauth2/token"
 
 agent-argocd:
   nameOverride: "agent-argocd"

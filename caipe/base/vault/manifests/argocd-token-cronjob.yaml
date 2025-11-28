@@ -105,6 +105,11 @@ spec:
                     ARGOCD_API_URL="http://argocd-server.argocd.svc.cluster.local" \
                     ARGOCD_VERIFY_SSL="false"
                   echo "ArgoCD API token created and stored in Vault"
+
+                  # Force ExternalSecret to refresh immediately
+                  echo "Triggering ExternalSecret refresh..."
+                  kubectl annotate externalsecret agent-argocd-secret -n ai-platform-engineering \
+                    force-sync=$(date +%s) --overwrite 2>/dev/null || echo "ExternalSecret annotation skipped (may not exist yet)"
                 else
                   echo "Failed to create ArgoCD token"
                   exit 1

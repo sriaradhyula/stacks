@@ -178,8 +178,13 @@ data:
         entityFilename: catalog-info.yaml
         pullRequestBranchName: backstage-integration
       rules:
-        - allow: [Component, System, API, Resource, Location, Template]
+        - allow: [Component, System, API, Resource, Location, Template, User, Group, Domain]
       locations:
+        # Mock catalog data for testing MCP tools
+        - type: file
+          target: /app/mock-catalog/all.yaml
+          rules:
+            - allow: [Component, System, API, Resource, Location, Template, User, Group, Domain]
         # Examples from a public GitHub repository.
         - type: url
           target: https://cnoe.localtest.me/gitea/giteaAdmin/idpbuilder-localdev-backstage-templates-entities/raw/branch/main/catalog-info.yaml
@@ -207,19 +212,21 @@ data:
       botName: CAIPE
       infoPage: https://cnoe-io.github.io/ai-platform-engineering/
       showOptions: true
-      useOpenIDToken: true  # Set to true to use OpenIdConnectApi.getIdToken(), false to use IdentityApi.getCredentials()
-      enableStreaming: false   # Set to true to enable streaming responses, false for non-streaming
+      useOpenIDToken: false  # use backstage auth instead of custom auth e.g. keycloak
+      enableStreaming: true  # Set to true to enable streaming responses, false for non-streaming
       requestTimeout: 300
-      headerTitle: CAIPE
+      autoReloadOnTokenExpiry: false
+      userEmailMode: "none" # Options: "none", "message" (prepends user email to every user message), "metadata" (adds user email to metadata)
+      headerTitle: CAIPE Distributed Multi-Agentic System
       headerSubtitle: AI Platform Engineer Assistant
       inputPlaceholder: Ask CAIPE anything...
       initialSuggestions:
-        - Create GitHub Repository
-        - Deploy ArgoCD Application
-        - Create AWS Resources
-        - Get LLM keys
-        - Add MyID Groups
-        - Invite users to Github Organization
+        - What can you do?
+        - What ArgoCD Applications are deployed?
+        - List all users and groups in Backstage
+        - Who is on the platform-team?
+        - Show me all teams in the catalog
+        - Get my Github profile details
       thinkingMessagesInterval: 7000  # Interval in milliseconds (default: 7000)
       thinkingMessages:
         - "⚙️ Processing query — even great thoughts start with a single thread."
@@ -320,7 +327,7 @@ spec:
                 name: argocd-credentials
             - secretRef:
                 name: backstage-api-token
-          image: ghcr.io/sriaradhyula/backstage-app:35e30d165584e583b205c365d44cb938864896c7
+          image: ghcr.io/suwhang-cisco/backstage-app:608f93ad3fc75cd3161d7163ba677e9ccc9caeff
           name: backstage
           ports:
             - containerPort: 7007
@@ -328,6 +335,9 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: backstage-config
+              readOnly: true
+            - mountPath: /app/mock-catalog
+              name: mock-catalog
               readOnly: true
       serviceAccountName: backstage
       volumes:
@@ -344,6 +354,9 @@ spec:
                     - key: k8s-config.yaml
                       path: k8s-config.yaml
                   name: k8s-config
+        - name: mock-catalog
+          configMap:
+            name: backstage-mock-catalog
 ---
 apiVersion: apps/v1
 kind: StatefulSet

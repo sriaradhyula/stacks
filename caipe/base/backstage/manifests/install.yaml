@@ -212,10 +212,11 @@ data:
       botName: CAIPE
       infoPage: https://cnoe-io.github.io/ai-platform-engineering/
       showOptions: true
-      useOpenIDToken: true  # Set to true to use OpenIdConnectApi.getIdToken(), false to use IdentityApi.getCredentials()
+      useOpenIDToken: false  # use backstage auth instead of custom auth e.g. keycloak
       enableStreaming: true  # Set to true to enable streaming responses, false for non-streaming
       requestTimeout: 300
       autoReloadOnTokenExpiry: false
+      userEmailMode: "none" # Options: "none", "message" (prepends user email to every user message), "metadata" (adds user email to metadata)
       headerTitle: CAIPE Distributed Multi-Agentic System
       headerSubtitle: AI Platform Engineer Assistant
       inputPlaceholder: Ask CAIPE anything...
